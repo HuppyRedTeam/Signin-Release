@@ -1,5 +1,5 @@
 name: Sign_in
-main: com.chenhao220.Signin
+main: com.chenhao220.Signin.Signin
 version: 1.0 Release
 author: chenhao220
 commands: 
