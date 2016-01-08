@@ -1,0 +1,14 @@
+name: Sign_in
+main: com.chenhao220.Signin
+version: 1.0 Release
+author: chenhao220
+commands: 
+  sigin:
+    description: signin main commands
+    usage: /<command>
+    permission: sigin.main
+    permission-message: §c你需要sigin.main权限来执行此命令
+permissions: 
+  sigin.main: 
+    description: 允许使用/sign
+    default: true
