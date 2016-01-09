@@ -30,6 +30,9 @@ public class LoginListener implements Listener{
 		     }else{
 		    	 return;
 		     }
+		     if(p.isOp()){
+		    	 p.sendMessage("§6[§c签到§6]§c请关注插件最新版本§e http://www.hhxcmc.com:8080/job/Signin-Release/");
+		     }
 		  }catch(Exception e){
 			  
 		  }
