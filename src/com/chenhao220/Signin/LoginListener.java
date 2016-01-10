@@ -47,6 +47,11 @@ public class LoginListener implements Listener{
 		String time = month+"-"+day;
 		try{
 			log.load(logf);
+			if((log.getString(p.getName()+".signdate"))==null){
+				log.set(p.getName()+".day",0);
+				log.set(p.getName()+".signdate","0-0");
+				log.save(logf);
+			}
 			String signtime = log.getString(p.getName()+".signdate");
 			if(signtime.equals(time)){
 				return true;
