@@ -32,6 +32,7 @@ public final class Signin extends JavaPlugin{
 	   }
 	   this.getCommand("signin").setExecutor(new SignCommand(this));
 	   this.getServer().getPluginManager().registerEvents(new LoginListener(this),this);
+
 	   if(!setupEconomy()){
 		   this.getLogger().info("Vault插件加载失败，可能是因为你没有安装Vault插件或没有Vault支持的经济插件");
 		   this.getLogger().info("如果你已安装Vault且无其他异常，你可以尝试更新Vault");
