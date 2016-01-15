@@ -23,13 +23,11 @@ public class BasicCommand implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String Label,String[] args) {
 		if(cmd.getName().equalsIgnoreCase("signin")){
-			File logf = sr.getFile();
-			YamlConfiguration log = sr.getLog();
-			Economy eco = sr.getEconomy();
 			if(args.length==0){
 				if(sender instanceof Player){
+					sr.getServer().getPluginManager().registerEvents(new InventoryListener(sr), sr);
 					Player p = (Player)sender;
-					p.openInventory(Util.getnormalInv());
+					p.openInventory(Util.getnormalInv(p));
 				}else{
 					sender.sendMessage("§6[§c签到系统§6]§c你无法在后台使用此插件");
 					return true;

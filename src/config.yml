@@ -1,1 +1,11 @@
 price: 1
+shop: 
+  1: 
+    credit: 5
+    displayitem: 1
+    displayname: &a礼包1
+    lore: 
+    - '&a价格:123'
+    money: 0
+    item: 
+    - 3 5

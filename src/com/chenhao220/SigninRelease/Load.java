@@ -35,6 +35,7 @@ public class Load extends JavaPlugin{
 		   this.getPluginLoader().disablePlugin(this);
 	   }
 	   this.getCommand("signin").setExecutor(new BasicCommand(this));
+	   this.getServer().getPluginManager().registerEvents(new LoginListener(this), this);
 	   this.getLogger().info("插件已加载");
 	   this.getLogger().info("版本:2.0 Alpha");
 	   new Util(this);
