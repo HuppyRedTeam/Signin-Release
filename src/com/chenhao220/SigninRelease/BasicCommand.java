@@ -27,14 +27,23 @@ public class BasicCommand implements CommandExecutor{
 				if(sender instanceof Player){
 					sr.getServer().getPluginManager().registerEvents(new InventoryListener(sr), sr);
 					Player p = (Player)sender;
+					Util.checkMonth(p);
 					p.openInventory(Util.getnormalInv(p));
+					return true;
 				}else{
 					sender.sendMessage("§6[§c签到系统§6]§c你无法在后台使用此插件");
 					return true;
 				}
 			}
+			if(args.length==1){
+				if(args[0].equalsIgnoreCase("reload")){
+					sr.reloadConfig();
+					sender.sendMessage("§6[§c签到系统§6]§c插件已重载！");
+					return true;
+				}
+			}
 		}
-		return false;
+		return true;
 	}
    
 }

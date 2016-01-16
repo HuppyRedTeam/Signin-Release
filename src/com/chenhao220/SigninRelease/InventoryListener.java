@@ -37,6 +37,7 @@ public class InventoryListener implements Listener{
     	}
     	if(Util.checkItem(event.getCurrentItem(), Item.shop)){
     		p.openInventory(Util.getshopInv(p));
+    		sr.getServer().getPluginManager().registerEvents(new ShopListener(sr),sr);
     	}
     	event.setCancelled(true);
     }

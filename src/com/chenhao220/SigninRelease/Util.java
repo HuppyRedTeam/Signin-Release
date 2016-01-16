@@ -3,12 +3,14 @@ package com.chenhao220.SigninRelease;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -45,10 +47,11 @@ public class Util {
 	public static Inventory getnormalInv(Player p){
 		File logf = sr.getFile();
 		YamlConfiguration log = sr.getLog();
-		Inventory inv = sr.getServer().createInventory(null,45,"§l§6[§c签到系统§6]§a个人签到菜单");
 		Calendar c = Calendar.getInstance();
 		int day = c.get(Calendar.DATE);
 		int maxday = c.getActualMaximum(Calendar.DATE);
+		int month = c.get(Calendar.MONTH)+1;
+		Inventory inv = sr.getServer().createInventory(null,45,"§c§l[§6每日签到§c]§c§3今日: §c"+month+"月"+day+"日");
 		try {
 			log.load(logf);
 			List<Integer> a = log.getIntegerList(p.getName()+".signdate");
@@ -83,6 +86,9 @@ public class Util {
 		return inv;
 	}
     public static boolean checkItem(ItemStack item,ItemStack otheritem){
+    	if(item.getItemMeta().getDisplayName()==null){
+    		return false;
+    	}
     	if(item.getItemMeta().getDisplayName().equals(otheritem.getItemMeta().getDisplayName())){
     		return true;
     	}else{
@@ -122,9 +128,18 @@ public class Util {
 	    		if(sr.getConfig().get("shop."+i+".displayitem")!=null){
 	    			ItemStack a = new ItemStack(sr.getConfig().getInt("shop."+i+".displayitem"),1);
 	    			ItemMeta me = a.getItemMeta();
-	    			String name = sr.getConfig().getString("shop."+i+".displayname");
-	    			name.replace(name,'§'+name);
-	    			me.setLore(sr.getConfig().getStringList("shop."+i+".lore"));
+	    			String dp = sr.getConfig().getString("shop."+i+".displayname");
+	    			String name = ChatColor.translateAlternateColorCodes('&', dp);
+	    			me.setDisplayName(name);
+	    			List<String> lr = sr.getConfig().getStringList("shop."+i+".lore");
+	    			String[] lr2 = lr.toArray(new String[lr.size()]);
+	    			List<String> lore = new ArrayList<String>();
+	    			for(int c=0;c<lr2.length;c++){
+	    				String rb = lr2[c];
+	    				String lr_ = ChatColor.translateAlternateColorCodes('&', rb);
+	    				lore.add(lr_);
+	    			}
+	    			me.setLore(lore);
 	    			a.setItemMeta(me);
 	    			inv.setItem(i-1,a);
 	    		}else{
@@ -136,5 +151,68 @@ public class Util {
 			sr.getLogger().log(Level.SEVERE, "错误发生了！"+e.getMessage());
 		}
 		return null;
+    }
+    public static void checkMonth(Player p){
+    	Calendar c = Calendar.getInstance();
+		YamlConfiguration log = sr.getLog();
+		File logf = sr.getFile();
+		try {
+			log.load(logf);
+			int signmonth = log.getInt(p.getName()+".signmonth");
+			int month = c.get(Calendar.MONTH)+1;
+			if(signmonth==month){
+				return;
+			}else{
+				log.set(p.getName()+".signday", null);
+				log.set(p.getName()+".signmonth", month);
+				log.save(logf);
+			}
+		} catch (IOException| InvalidConfigurationException e) {
+			sr.getLogger().log(Level.SEVERE,"读取文件错误！");
+		}
+    }
+    public static void reward(int slot,Player p){
+		YamlConfiguration log = sr.getLog();
+		File logf = sr.getFile();
+		Economy eco = sr.getEconomy();
+		try {
+			log.load(logf);
+			if(sr.getConfig().get("shop."+(slot+1)+".item")!=null){
+				if(log.getInt(p.getName()+".credit")>=sr.getConfig().getInt("shop."+(slot+1)+".credit")){
+					List<String> lr = sr.getConfig().getStringList("shop."+(slot+1)+".item");
+					int money = sr.getConfig().getInt("shop."+(slot+1)+".money");
+					if(lr.size()==0){
+						int credit = log.getInt(p.getName()+".credit")-sr.getConfig().getInt("shop."+(slot+1)+".credit");
+						log.set(p.getName()+".credit",credit);
+						p.sendMessage("§6[§c签到系统§6]§a已扣除"+sr.getConfig().getInt("shop."+(slot+1)+".credit")+"张签到卷");
+						eco.depositPlayer(p,money);
+						p.sendMessage("§6[§c签到系统§6]§a已获得奖励"+money+"金钱");
+					}else{
+						String[] m = lr.toArray(new String[lr.size()]);
+						for(int i=0;i<m.length;i++){
+							String a = m[i];
+							String[] b = a.split(" ");
+							int itemID = Integer.parseInt(b[0]);
+							int itemAmount = Integer.parseInt(b[1]);
+							ItemStack item = new ItemStack(itemID,itemAmount);
+							p.getInventory().addItem(item);
+						}
+						int credit = log.getInt(p.getName()+".credit")-sr.getConfig().getInt("shop."+(slot+1)+".credit");
+						log.set(p.getName()+".credit",credit);
+						p.sendMessage("§6[§c签到系统§6]§a已扣除"+sr.getConfig().getInt("shop."+(slot+1)+".credit")+"张签到卷");
+						eco.depositPlayer(p,money);
+						p.sendMessage("§6[§c签到系统§6]§a已获得奖励"+money+"金钱");
+						p.sendMessage("§6[§c签到系统§6]§a已获得物品奖励");
+					}
+				}else{
+					p.sendMessage("§6[§c签到系统§6]§c你没有足够的签到卷！");
+					return;
+				}
+			}else{
+				return;
+			}
+		} catch (IOException| InvalidConfigurationException e) {
+			sr.getLogger().log(Level.SEVERE,"读取文件错误！");
+		}
     }
 }

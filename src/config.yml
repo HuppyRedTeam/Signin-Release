@@ -3,9 +3,10 @@ shop:
   1: 
     credit: 5
     displayitem: 1
-    displayname: &a礼包1
+    displayname: Example
     lore: 
-    - '&a价格:123'
+    - &a It's example item
+    - &a Please edit config.yml to replace this item
     money: 0
     item: 
     - 3 5

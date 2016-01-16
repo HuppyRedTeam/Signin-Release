@@ -12,13 +12,12 @@ public class Item {
     public static ItemStack unsignin = new ItemStack(Material.WOOL,1);
     public static ItemStack unusesignin = new ItemStack(Material.WOOL,1);
     public static ItemStack beensignin = new ItemStack(Material.WOOL,1);
-    public static ItemStack signinactive = new ItemStack(Material.WOOL,1);
+    public static ItemStack signinactive = new ItemStack(Material.BOOK_AND_QUILL,1);
     public static ItemStack shop = new ItemStack(Material.CHEST,1);
     static{
     	normal.setDurability((short)7);
     	unsignin.setDurability((short)14);
     	beensignin.setDurability((short)5);
-    	signinactive.setDurability((short)1);
     }
 
     public static ItemStack getnormal(int day,int credit){
