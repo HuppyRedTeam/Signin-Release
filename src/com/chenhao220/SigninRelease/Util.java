@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,9 +18,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
+@SuppressWarnings("deprecation")
 public class Util {
 	private static Load sr;
+	@SuppressWarnings("static-access")
 	public Util(Load arg){
 		this.sr=arg;
 	}
@@ -82,7 +84,12 @@ public class Util {
 			inv.setItem(i, a);
 		}
 		ItemStack shop = Item.getshop();
-		inv.setItem(44,shop);
+		inv.setItem(43,shop);
+		List<String> listlore = new ArrayList<String>();
+		listlore.add("§a你连续签到了:§c"+Util.seriesSignin(p)+"§a天");
+		listlore.add("§a你本月一共签到了:§c"+(log.getIntegerList(p.getName()+".signdate").size())+"§a天");
+		ItemStack list = Item.getList(listlore);
+		inv.setItem(44,list);
 		return inv;
 	}
     public static boolean checkItem(ItemStack item,ItemStack otheritem){
@@ -171,7 +178,7 @@ public class Util {
 			sr.getLogger().log(Level.SEVERE,"读取文件错误！");
 		}
     }
-    public static void reward(int slot,Player p){
+	public static void reward(int slot,Player p){
 		YamlConfiguration log = sr.getLog();
 		File logf = sr.getFile();
 		Economy eco = sr.getEconomy();
@@ -187,6 +194,7 @@ public class Util {
 						p.sendMessage("§6[§c签到系统§6]§a已扣除"+sr.getConfig().getInt("shop."+(slot+1)+".credit")+"张签到卷");
 						eco.depositPlayer(p,money);
 						p.sendMessage("§6[§c签到系统§6]§a已获得奖励"+money+"金钱");
+						log.save(logf);
 					}else{
 						String[] m = lr.toArray(new String[lr.size()]);
 						for(int i=0;i<m.length;i++){
@@ -199,6 +207,7 @@ public class Util {
 						}
 						int credit = log.getInt(p.getName()+".credit")-sr.getConfig().getInt("shop."+(slot+1)+".credit");
 						log.set(p.getName()+".credit",credit);
+						log.save(logf);
 						p.sendMessage("§6[§c签到系统§6]§a已扣除"+sr.getConfig().getInt("shop."+(slot+1)+".credit")+"张签到卷");
 						eco.depositPlayer(p,money);
 						p.sendMessage("§6[§c签到系统§6]§a已获得奖励"+money+"金钱");
@@ -215,4 +224,25 @@ public class Util {
 			sr.getLogger().log(Level.SEVERE,"读取文件错误！");
 		}
     }
+	public static int seriesSignin(Player p){
+		File logf = sr.getFile();
+		YamlConfiguration log = sr.getLog();
+		try {
+			log.load(logf);
+			int combo = 1;
+			List<Integer> a = log.getIntegerList(p.getName()+".signdate");
+			Integer[] day = a.toArray(new Integer[a.size()]);
+			for(int i=1;i<day.length-1;i++){
+				if(day[i+1]-day[i]==1){
+					combo++;
+				}else{
+					combo=1;
+				}
+			}
+			return combo;
+		} catch (IOException| InvalidConfigurationException e) {
+			e.printStackTrace();
+			return 1;
+		}
+	}
 }

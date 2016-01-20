@@ -14,6 +14,7 @@ public class Item {
     public static ItemStack beensignin = new ItemStack(Material.WOOL,1);
     public static ItemStack signinactive = new ItemStack(Material.BOOK_AND_QUILL,1);
     public static ItemStack shop = new ItemStack(Material.CHEST,1);
+    public static ItemStack list = new ItemStack(Material.PAPER,1);
     static{
     	normal.setDurability((short)7);
     	unsignin.setDurability((short)14);
@@ -65,6 +66,13 @@ public class Item {
     	meta.setDisplayName("§6[§c签到§6]§e进入签到卷商店");
     	shop.setItemMeta(meta);
     	return Item.shop;
+    }
+    public static ItemStack getList(List<String> lore){
+    	ItemMeta meta = list.getItemMeta();
+    	meta.setDisplayName("§6[§c签到信息§6]");
+    	meta.setLore(lore);
+    	list.setItemMeta(meta);
+    	return Item.list;
     }
 
 }
