@@ -36,8 +36,9 @@ public class Load extends JavaPlugin{
 	   }
 	   this.getCommand("signin").setExecutor(new BasicCommand(this));
 	   this.getServer().getPluginManager().registerEvents(new LoginListener(this), this);
+	   this.getServer().getPluginManager().registerEvents(new Supply(this), this);
 	   this.getLogger().info("插件已加载");
-	   this.getLogger().info("版本:2.0 Alpha");
+	   this.getLogger().info("版本:2.0 Beta");
 	   new Util(this);
     }
     public void onDisable(){

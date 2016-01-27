@@ -15,10 +15,12 @@ public class Item {
     public static ItemStack signinactive = new ItemStack(Material.BOOK_AND_QUILL,1);
     public static ItemStack shop = new ItemStack(Material.CHEST,1);
     public static ItemStack list = new ItemStack(Material.PAPER,1);
+    public static ItemStack supply = new ItemStack(Material.PAPER,1);
     static{
     	normal.setDurability((short)7);
     	unsignin.setDurability((short)14);
     	beensignin.setDurability((short)5);
+    	getsupply(1);
     }
 
     public static ItemStack getnormal(int day,int credit){
@@ -74,5 +76,15 @@ public class Item {
     	list.setItemMeta(meta);
     	return Item.list;
     }
-
+    public static ItemStack getsupply(int amount){
+    	supply.setAmount(amount);
+    	ItemMeta meta = supply.getItemMeta();
+    	meta.setDisplayName("§c§l补签卷");
+    	List<String> lore = new ArrayList<String>();
+    	lore.add("§e使用方法:");
+    	lore.add("§c - 点击右键并输入要补签的天数（本月第n天签到）");
+    	meta.setLore(lore);
+    	supply.setItemMeta(meta);
+    	return Item.supply;
+    }
 }

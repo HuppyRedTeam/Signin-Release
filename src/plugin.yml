@@ -1,6 +1,6 @@
 name: Signin
 main: com.chenhao220.SigninRelease.Load
-version: 2.0 Alpha
+version: 2.0 Beta2
 author: chenhao220
 commands: 
   signin:

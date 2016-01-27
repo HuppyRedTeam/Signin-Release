@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -24,9 +24,6 @@ public class Util {
 	@SuppressWarnings("static-access")
 	public Util(Load arg){
 		this.sr=arg;
-	}
-	public Util(){
-		
 	}
 	public static boolean checkPlayer(Player p){
 		YamlConfiguration log = sr.getLog();
@@ -93,13 +90,13 @@ public class Util {
 		return inv;
 	}
     public static boolean checkItem(ItemStack item,ItemStack otheritem){
-    	if(item.getItemMeta().getDisplayName()==null){
+    	if(item==null){
     		return false;
     	}
     	if(item.getItemMeta().getDisplayName().equals(otheritem.getItemMeta().getDisplayName())){
     		return true;
     	}else{
-    	return false;
+    	    return false;
     	}
     }
     public static void signin(Player p){
@@ -112,9 +109,7 @@ public class Util {
 			int a = c.get(Calendar.DATE);
 			int b = c.get(Calendar.MONTH)+1;
 			int month = log.getInt(p.getName()+".signmonth");
-			if(month!=b){
-				log.set(p.getName()+".signmoth",b);
-			}
+			Util.checkMonth(p);
 			day.add(a);
 			log.set(p.getName()+".signdate", day);
 		    int d = log.getInt(p.getName()+".credit");
@@ -212,6 +207,7 @@ public class Util {
 						eco.depositPlayer(p,money);
 						p.sendMessage("§6[§c签到系统§6]§a已获得奖励"+money+"金钱");
 						p.sendMessage("§6[§c签到系统§6]§a已获得物品奖励");
+						return;
 					}
 				}else{
 					p.sendMessage("§6[§c签到系统§6]§c你没有足够的签到卷！");
@@ -231,6 +227,7 @@ public class Util {
 			log.load(logf);
 			int combo = 1;
 			List<Integer> a = log.getIntegerList(p.getName()+".signdate");
+			Collections.sort(a);
 			Integer[] day = a.toArray(new Integer[a.size()]);
 			for(int i=1;i<day.length-1;i++){
 				if(day[i+1]-day[i]==1){
@@ -245,4 +242,39 @@ public class Util {
 			return 1;
 		}
 	}
+    public static int allSignin(Player p){
+		YamlConfiguration log = sr.getLog();
+		File logf = sr.getFile();
+		try {
+			log.load(logf);
+			int all = log.getStringList(p.getName()+".signdate").size();
+			return all;
+		} catch (IOException| InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		return 0;
+    }
+    public static void runCommand(String command){
+    }
+    public static void Supply(Player p,int supplyday){
+		YamlConfiguration log = sr.getLog();
+		File logf = sr.getFile();
+		try {
+			log.load(logf);
+			List<Integer> day = log.getIntegerList(p.getName()+".signdate");
+			day.add(supplyday);
+			log.set(p.getName()+".signdate",day);
+			log.save(logf);
+			p.sendMessage("§6[§c签到系统§6]§a你已使用补签卷补签本月第 §c"+supplyday+"§a天签到");
+			return;
+		} catch (IOException| InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+    }
+    public static void giveSupplyCredit(Player p,int supply){
+    	Inventory inv = p.getInventory();
+    	inv.addItem(Item.getsupply(supply));
+    	return;
+    }
+    
 }

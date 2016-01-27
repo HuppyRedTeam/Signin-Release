@@ -41,6 +41,18 @@ public class BasicCommand implements CommandExecutor{
 					sender.sendMessage("§6[§c签到系统§6]§c插件已重载！");
 					return true;
 				}
+				sender.sendMessage("§6[§c签到系统§6]§c不存在的命令！");
+			}
+			if(args.length==3){
+				if(args[0].equalsIgnoreCase("givesupply")){
+					Player p = sr.getServer().getPlayer(args[1]);
+					int supply = Integer.parseInt(args[2]);
+					Util.giveSupplyCredit(p,supply);
+					sender.sendMessage("§6[§c签到系统§6]§a你已成功向玩家"+p.getName()+"账户添加"+supply+"张补签卷");
+					p.sendMessage("§6[§c签到§6]§a你已收到"+supply+"张补签卷");
+					return true;
+				}
+				sender.sendMessage("§6[§c签到系统§6]§c不存在的命令！");
 			}
 		}
 		return true;
